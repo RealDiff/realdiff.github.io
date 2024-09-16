@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="">
+  <meta name="keywords" content="RealDiff">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RealDiff: Real-world 3D Shape Completion using Self-Supervised Diffusion Models</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script> -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/intro.jpg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <style>
+  .paragraph {
+    max-height: 100px; /* Set maximum height for collapsed state */
+    overflow: hidden; /* Hide overflow */
+    transition: max-height 0.3s ease; /* Smooth transition animation */
+  }
+  .expand-button {
+    color: #4895EF;
+    cursor: pointer;
+  }
+</style>
+
+  <style>
+  .video-small {
+    height: 75%;
+  }
+
+  .video-large {
+
+  }
+
+  .intro img{
+    display: block;
+    margin: 0 auto;
+    width: 90%; /* Ensure the image is 70% of its container's width */
+    height: auto; /* Maintain aspect ratio */
+  }
+</style>
+
+</head>
+<body>
+
+
+<!--
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          Related Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+-->
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">RealDiff: Real-world 3D Shape Completion using Self-Supervised Diffusion Models</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://basakmelisocal.github.io/">Başak Melis Öcal</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/tatarchm/?originalSubdomain=de/">Maxim Tatarchenko</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://karaoglusezer.github.io/">Sezer Karaoğlu</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://staff.fnwi.uva.nl/th.gevers/">Theo Gevers</a><sup>1</sup></span>
+            </span>
+          </div>
+
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>University of Amsterdam</span>
+            <span class="author-block"><sup>2</sup>Bosch Center for Artificial Intelligence</span>
+          </div>
+
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper (Coming soon)</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv (Coming soon)</span>
+                </a>
+              </span>
+              <!--
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video (Coming soon)</span>
+                </a>
+              </span>
+              -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (Coming soon)</span>
+                  </a>
+              </span>
+              <!-- Dataset Link.
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+              </span> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--
+<section class="teaser">
+  <div class="container is-max-desktop">
+    <div class="intro">
+      <img src="./static/intro.jpg">
+      <h2 class="subtitle has-text-centered">
+        <br><br> <span class="dnerf">SceneTeller</span> generates realistic and high-quality 3D spaces from natural language prompts describing the object placement in the room.
+      </h2>
+    </div>
+  </div>
+</section>
+-->
+
+<!--
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="valentinesv" autoplay controls muted loop playsinline class="video-small" height="10%">
+            <source src="./static/videos/valentines.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="goldbedv" autoplay controls muted loop playsinline class="video-small" height="10%" >
+            <source src="./static/videos/goldbed.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="pirate1v" autoplay controls muted loop playsinline class="video-small" height="10%" >
+            <source src="./static/videos/pirate1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+        <div class="item item-toby">
+          <video poster="" id="barbiev" autoplay controls muted loop playsinline class="video-small" height="10%" >
+            <source src="./static/videos/barbie.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="iceagev" autoplay controls muted loop playsinline class="video-small" height="10%" >
+            <source src="./static/videos/iceage.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="blackbedv" autoplay controls muted loop playsinline class="video-small" height="10%" >
+            <source src="./static/videos/blackbed.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="garfieldv" autoplay controls muted loop playsinline class="video-small" height="10%" >
+            <source src="./static/videos/garfield.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="cinderellav" autoplay controls muted loop playsinline class="video-small" height="10%" >
+            <source src="./static/videos/cinderella.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <script>
+          // Get all video elements with the class "myVideo"
+          var videos = document.querySelectorAll(".video-small");
+
+          // Loop through each video and set the playback rate to 2x speed
+          videos.forEach(function(video) {
+            video.playbackRate = 10.0;
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+-->
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Point cloud completion aims to recover the complete 3D shape of an object from partial observations.
+            While approaches relying on synthetic shape priors achieved promising results in this domain, their applicability
+            and generalizability to real-world data are still limited. To tackle this problem, we propose a self-supervised framework,
+            namely RealDiff, that formulates point cloud completion as a conditional generation problem directly on real-world measurements.
+          </p>
+          <p>
+            To better deal with noisy observations without resorting to training on synthetic data, we leverage additional geometric cues.
+            Specifically, RealDiff simulates a diffusion process at the missing object parts while conditioning the generation on the partial input to
+            address the multimodal nature of the task. We further regularize the training by matching object silhouettes and depth maps,
+            predicted by our method, with the externally estimated ones. Experimental results show that our method consistently outperforms
+            state-of-the-art methods in real-world point cloud completion.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Overview</h2>
+        <div class="pipeline overview">
+          <img src="./static/arch.jpg" >
+          <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+          <p class="content has-text-justified">When given a pair of noisy point clouds representing an object, our pipeline takes
+            one of these point clouds as input, and a pseudo ground-truth is created by combining the two point clouds.
+            A diffusion process is simulated at the missing parts (unoccupied input voxels)
+            of the voxelized input, while conditioning the generation on the known parts
+            (occupied input voxels). To eliminate the noise from the reconstructions, the rendered object
+            shapes’ silhouettes and depth maps are constrained
+            to match the auxiliary silhouettes (e.g. from ScanNet) and depth maps
+            (e.g., from a pre-trained Omnidata model). At generation time, only  <i>f&theta;</i>
+            is used to reconstruct a complete 3D shape from the input real-world point cloud.
+        </div>
+      </div>
+    </div>
+
+    <!--
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src=""
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    -->
+
+
+  </div>
+</section>
+
+
+<!--
+<section class="section">
+  <div class="container is-max-desktop">
+
+    
+
+    <div class="columns is-centered">
+      <script>
+        function expandParagraph(paragraphId) {
+          var paragraph = document.getElementById(paragraphId);
+          var expandButton = paragraph.nextElementSibling;
+
+          // Toggle between collapsed and expanded states
+          if (paragraph.classList.contains("expanded")) {
+            paragraph.style.maxHeight = "100px"; // Set maximum height for collapsed state
+            expandButton.innerHTML = "[...]"; // Change button text to '[...]' for collapsed state
+            paragraph.classList.remove("expanded");
+          } else {
+            paragraph.style.maxHeight = paragraph.scrollHeight + "px"; // Expand to full height
+            expandButton.innerHTML = "[collapse]"; // Change button text to '[collapse]' for expanded state
+            paragraph.classList.add("expanded");
+          }
+        }
+      </script>
+
+      <div class="column">
+        <div class="content">
+          <video id="halloween" autoplay controls muted loop playsinline class="video-large" height="100%">
+            <source src="./static/videos/halloween.mp4"
+                    type="video/mp4">
+          </video>
+          <div class="paragraph" id="paragraph1">
+          <p style="text-align: center;"><font size="-1">
+            "A <b><span style="color: #F06C05">double bed</span></b> is positioned in the middle of the room, a bit nearer to the upper left wall,
+            with a perpendicular orientation. A <b><span style="color: #F06C05">wardrobe</span></b> is placed at the middle of the bottom wall,
+            somewhat nearer to the left wall, with no rotation. A <b><span style="color: #F06C05">nightstand</span></b> is positioned at the top
+            left corner, with a perpendicular orientation. Another <b><span style="color: #F06C05">nightstand</span></b> is situated close to the
+            bottom left corner, also with a perpendicular orientation. A <b><span style="color: #F06C05">cabinet</span></b> is set at the middle
+            of the right wall, slightly nearer to the bottom wall, oriented perpendicularly but in the
+            opposite direction. Another <b><span style="color: #F06C05">cabinet</span></b> is set near the top right corner, oriented perpendicularly
+            but in the reverse direction. <b><span style="color: #F06C05">Make it Halloween themed.</span></b>"
+          </font></p></div>
+          <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph1')">[...]</div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="barbie" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/barbie.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph2">
+             <p style="text-align: center;"><font size="-1">
+               "Centrally positioned along the bottom wall, with a slight bias towards the right wall, is a <b><span style="color: #FE5D9F">wardrobe</span></b> with no rotation.
+               On the upper wall, there's a <b><span style="color: #FE5D9F">double bed</span></b> situated in the middle but nearer to the left wall and is oriented in the opposite direction.
+               Nestled in both upper corners are <b><span style="color: #FE5D9F">nightstands</span></b>, both facing backwards. <b><span style="color: #FE5D9F">Make it Barbie style.</span></b>"
+             </font></p></div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph2')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="gold-bed" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/goldbed.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph3">
+             <p style="text-align: center;"><font size="-1">
+               "In the middle of the room, a <b><span style="color: #A47E1B">double bed</span></b> is placed, slightly more towards the bottom right wall,
+               with its orientation being perpendicular and facing the reverse direction. A <b><span style="color: #A47E1B">wardrobe</span></b>  is situated
+               at the center of the top wall, a bit closer to the right wall, with its orientation facing backwards. Near the top right corner of the room,
+               a  <b><span style="color: #A47E1B">table</span></b>  is situated, oriented perpendicularly but in the reverse direction.
+               At the bottom left corner, a  <b><span style="color: #A47E1B">cabinet</span></b>  is positioned, perpendicular to the walls.
+               Another  <b><span style="color: #A47E1B">table</span></b>  is situated near the bottom right corner, oriented perpendicularly but facing the opposite direction.
+                <b><span style="color: #A47E1B">Turn the double bed into golden.</span></b>"
+             </font></p></div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph3')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+
+    <div class="columns is-centered">
+
+      <div class="column">
+          <div class="content">
+            <video id="coastal2" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/coastal2.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph15">
+            <p style="text-align: center;"><font size="-1">
+              "In the upper right corner, a <b><span style="color: #3CB8CB">multi seat sofa</span></b> is situated with a backwards orientation.
+              Positioned at the middle of the right wall, closer to the lower boundary, is a <b><span style="color: #3CB8CB">coffee table</span></b>,
+              also oriented backwards. A <b><span style="color: #3CB8CB">tv stand</span></b> is set up at the bottom right corner, without any rotation.
+              Towards the center of the left wall, a <b><span style="color: #3CB8CB">dining table</span></b> is positioned, a bit nearer to the upper
+              wall, and is oriented perpendicularly. A <b><span style="color: #3CB8CB">dining chair</span></b> is positioned at the middle of the
+              upper wall, a bit closer to the left wall, with an opposite perpendicular orientation.
+              Another <b><span style="color: #3CB8CB">dining chair</span></b> is found in the center of the room, leaning more towards the upper
+              left wall, also oriented oppositely to the perpendicular. At the upper left corner,
+              a <b><span style="color: #3CB8CB">dining chair</span></b> is positioned, oriented perpendicularly. Lastly, another <b><span style="color: #3CB8CB">dining chair</span></b>
+              is situated at the middle of the left wall, nearer to the upper wall, and it is also
+              perpendicularly oriented. <b><span style="color: #3CB8CB">Make it coastal style.</span></b>"
+
+            </font></p></div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph15')">[...]</div>
+          </div>
+        </div>
+
+
+
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="pirate2" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/pirate1.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph5">
+             <p style="text-align: center;"><font size="-1">
+               "A <b><span style="color: #9C6644">double bed</span></b> is positioned in the middle of the room, a bit nearer to the
+               top left wall, set at a right angle. In close proximity to the top left corner, a <b><span style="color: #9C6644">nightstand</span></b> is situated, set at a right
+               angle. Another <b><span style="color: #9C6644">nightstand</span></b> can be found placed near the bottom left corner, also set at a right angle.
+               In the bottom left corner, a <b><span style="color: #9C6644">wardrobe</span></b> is positioned, with no particular rotation.
+               Lastly, a <b><span style="color: #9C6644">shelf</span></b> is set in the top right corner, with no rotation.
+               <b><span style="color: #9C6644">Make it Pirates of the Caribbean style.</span></b>"
+            </font></p></div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph5')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="iceage" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/iceage.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph6">
+             <p style="text-align: center;"><font size="-1">
+               "The room is arranged with a <b><span style="color: #00B4D8">double bed</span></b> placed centrally, slightly nearer
+               to the bottom-left wall and is aligned at right angles. A <b><span style="color: #00B4D8">nightstand</span></b> is situated adjacent to
+               the upper left end, with a perpendicular orientation. Another <b><span style="color: #00B4D8">nightstand</span></b> can be found near the bottom
+               left corner, also arranged perpendicularly. The <b><span style="color: #00B4D8">wardrobe</span></b> is positioned at the mid-point of the upper wall,
+               skewed slightly to the left side, and is facing backwards. <b><span style="color: #00B4D8">Make it Ice Age themed.</span></b>"
+            </font></p>
+            </div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph6')">[...]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="columns is-centered">
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="valentines" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/valentines.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph7">
+             <p style="text-align: center;"><font size="-1">
+               "The room's central space is occupied by a <b><span style="color: #D90429">double bed</span></b>, positioned a bit closer to the upper left
+               wall and arranged in a perpendicular manner. A <b><span style="color: #D90429">wardrobe</span></b> is positioned at the midpoint of the upper wall,
+               leaning more towards the left wall, and is facing backwards. Near the upper left corner, a <b><span style="color: #D90429">nightstand</span></b> is
+               situated and is set up perpendicularly. A <b><span style="color: #D90429">dressing table</span></b> can be found closer to the lower left corner
+               and is also oriented perpendicularly. A <b><span style="color: #D90429">chair</span></b> is positioned at the midpoint of the lower wall, leaning
+               slightly more on the left side, and is tilted almost halfway between a horizontal and vertical orientation but in the reverse direction.
+               A <b><span style="color: #D90429">shelf</span></b> is positioned near the lower right corner and is set up with a straight orientation,
+               without any rotation. <b><span style="color: #D90429">Make it Valentine's Day themed.</span></b>"
+            </font></p>
+            </div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph7')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+          <div class="content">
+            <video id="pinktable" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/pinktable.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph14">
+            <p style="text-align: center;"><font size="-1">
+              "The <b><span style="color: #FF499E">coffee table</span></b> is situated in the middle of the upper wall, albeit a tad
+              nearer to the right wall, and is aligned perpendicularly facing the opposite direction.
+              Another <b><span style="color: #FF499E">coffee table</span></b> can be found in the middle of the right wall, a bit nearer to the lower wall,
+              and is facing towards the rear. Nestled in the upper right corner is another <b><span style="color: #FF499E">coffee table</span></b>, positioned
+              without any rotation. In the upper left corner, a <b><span style="color: #FF499E">tv stand</span></b> is positioned perpendicularly.
+              A <b><span style="color: #FF499E">multi seat sofa</span></b> is positioned near the upper right corner, facing perpendicularly but
+              in the reverse direction. Close to the lower left corner, a <b><span style="color: #FF499E">dining table</span></b> is situated
+              without any rotation. A <b><span style="color: #FF499E">dining chair</span></b> can be found in the center of the lower wall,
+              slightly nearer to the left wall, and is facing in its original direction. Another
+               <b><span style="color: #FF499E">dining chair</span></b> is positioned near the lower left corner, also without any rotation.
+              A third  <b><span style="color: #FF499E">dining chair</span></b> is situated in the room's center, closer to the lower left wall,
+              and oriented towards the rear. A fourth  <b><span style="color: #FF499E">dining chair</span></b> is positioned in the middle of the
+              left wall, slightly closer to the lower wall, positioned towards the rear. Lastly,
+              a  <b><span style="color: #FF499E">console table</span></b> can be found in the lower left corner, placed without any rotation. <b><span style="color: #FF499E">Turn the dining table into pink.</span></b>"
+
+            </font></p></div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph14')">[...]</div>
+          </div>
+        </div>
+
+
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="botanical" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/botanical.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph9">
+             <p style="text-align: center;"><font size="-1">
+               "The <b><span style="color: #5FA55E">double bed</span></b> is situated at the middle of the bottom wall, with a slight bias towards the right
+               wall, and is not rotated. Positioned almost in the middle of the room, the <b><span style="color: #5FA55E">stool</span></b> leans slightly towards
+               the upper right wall and is not rotated. The <b><span style="color: #5FA55E">tv stand</span></b> is placed at the middle of the top wall,
+               a bit closer to the right wall and is oriented in reverse. The <b><span style="color: #5FA55E">children cabinet</span></b> is positioned in the
+               upper right corner, set perpendicular but facing the opposite direction. The <b><span style="color: #5FA55E">wardrobe</span></b> finds its place
+               at the bottom left corner, with no rotation. The <b><span style="color: #5FA55E">coffee table</span></b> is stationed at the bottom right corner,
+               also with no rotation. <b><span style="color: #5FA55E">Make it botanical themed.</span></b>"
+            </font></p>
+            </div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph9')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="columns is-centered">
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="cinderella" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/cinderella.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph10">
+             <p style="text-align: center;"><font size="-1">
+               "The <b><span style="color: #59B4E9">wardrobe</span></b> is situated at the midpoint of the left wall, a bit nearer to the top wall,
+               and arranged in a perpendicular manner. The <b><span style="color: #59B4E9">double bed</span></b> is positioned in the middle of the room,
+               just a little closer to the upper right wall, with a backwards orientation. The <b><span style="color: #59B4E9">dressing table</span></b> can be
+               found at the upper right corner, facing backwards. A <b><span style="color: #59B4E9">nightstand</span></b> is placed near the upper left corner,
+               also oriented in a backwards direction. <b><span style="color: #59B4E9">Make it Cinderella style.</span></b>"
+            </font></p>
+            </div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph10')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="garfield" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/garfield.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph11">
+             <p style="text-align: center;"><font size="-1">
+               "Situated at the heart of the room, a <b><span style="color: #E85D04">double bed</span></b> is positioned, leaning somewhat nearer to the upper
+               right wall with a backward orientation. The <b><span style="color: #E85D04">wardrobe</span></b> is positioned in the middle of the left wall,
+               slightly closer to the upper wall, with a perpendicular orientation. Positioned near the upper left corner, a <b><span style="color: #E85D04">nightstand</span></b>
+               is oriented backwards. A <b><span style="color: #E85D04">tv stand</span></b> is situated in the middle of the lower wall, leaning a bit to the right wall
+               with no rotation in its orientation. <b><span style="color: #E85D04">Make it Garfield themed.</span></b>"
+            </font></p>
+            </div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph11')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="dalmatian" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/dalmatian.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph12">
+             <p style="text-align: center;"><font size="-1">
+               "A <b><span style="color: #6C757D">double bed</span></b> is positioned centrally in the room, but slightly nearer to the bottom left wall,
+               aligned in a perpendicular manner. A <b><span style="color: #6C757D">nightstand</span></b> is placed at the mid-point of the left wall,
+               leaning a bit towards the upper wall, with a perpendicular alignment. Another <b><span style="color: #6C757D">nightstand</span></b> is situated
+               at the bottom left corner, arranged perpendicularly. A <b><span style="color: #6C757D">wardrobe</span></b> is stationed at the center point
+               of the upper wall, a bit closer to the left wall, with a backwards orientation. <b><span style="color: #6C757D">Make it 101 Dalmatians style.</span></b>"
+            </font></p>
+            </div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph12')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column">
+          <div class="content">
+            <video id="marble" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/marble.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph13">
+            <p style="text-align: center;"><font size="-1">
+              "The <b><span style="color: #5E85F2">dining table</span></b> is situated in the middle of the room, but slightly leaning towards the lower left wall,
+              with its orientation reversed and perpendicular. One <b><span style="color: #5E85F2">dining chair</span></b> is positioned near the lower left corner,
+              with its orientation being perpendicular.
+              Another <b><span style="color: #5E85F2">dining chair</span></b> is placed in the middle of the left wall, a bit nearer to the lower wall, and is also perpendicular.
+              Yet another <b><span style="color: #5E85F2">dining chair</span></b> is set up at the midpoint of the left wall, but it's slightly more towards the upper wall
+              and is perpendicular. One <b><span style="color: #5E85F2">dining chair</span></b> is near the lower right corner, with its orientation reversed and perpendicular.
+              Another <b><span style="color: #5E85F2">dining chair</span></b> can be found at the center of the right wall, a bit closer to the lower wall, and it is perpendicular
+              but facing the opposite direction. Another <b><span style="color: #5E85F2">dining chair</span></b> is at the center of the right wall, but slightly more towards the
+              upper wall and its orientation is perpendicular but reversed. One more <b><span style="color: #5E85F2">dining chair</span></b> is in the middle of the upper wall,
+              closer to the left wall, and is oriented backwards. Finally, a <b><span style="color: #5E85F2">dining chair</span></b> is at the center of the lower wall, a bit closer
+              to the left wall, and it is oriented without any rotation. <b><span style="color: #5E85F2">Make it marble</span></b>"
+
+            </font></p></div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph13')">[...]</div>
+          </div>
+        </div>
+
+
+      <div class="column">
+        <div class="columns is-centered">
+          <div class="column content">
+            <video id="black-bed" autoplay controls muted loop playsinline class="video-large" height="100%">
+              <source src="./static/videos/blackbed.mp4"
+                      type="video/mp4">
+            </video>
+            <div class="paragraph" id="paragraph8">
+             <p style="text-align: center;"><font size="-1">
+               "Positioned at the top left corner is a <b><span style="color: #343A40">wardrobe</span></b>, standing perpendicularly.
+               On the top right corner, a <b><span style="color: #343A40">nightstand</span></b> is placed perpendicularly but facing the opposite direction.
+               Another <b><span style="color: #343A40">nightstand</span></b> is situated at the bottom right corner, also perpendicularly aligned but facing
+               in the opposite direction. A <b><span style="color: #343A40">double bed</span></b> can be found slightly nearer to the upper wall,
+               in the middle of the right wall, again oriented perpendicularly but in the opposite direction. A <b><span style="color: #343A40">stool</span></b> is
+               centrally placed in the room, slightly nearer to the upper left wall, and is oriented perpendicularly. <b><span style="color: #343A40">Turn the double bed into black coloured bed.</span></b>"
+            </font></p>
+            </div>
+            <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph8')">[...]</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="content">
+          <video id="vangogh" autoplay controls muted loop playsinline class="video-large" height="100%">
+            <source src="./static/videos/vangogh.mp4"
+                    type="video/mp4">
+          </video>
+          <div class="paragraph" id="paragraph4">
+          <p style="text-align: center;"><font size="-1">
+            "At the heart of the room, a <b><span style="color: #0466C8">double bed</span></b> is positioned a tad nearer to the top-right wall,
+            its orientation perpendicular but in reverse. Adjacent to the top-right corner, a <b><span style="color: #0466C8">nightstand</span></b> is placed,
+            its orientation also perpendicular but in reverse. A <b><span style="color: #0466C8">wardrobe</span></b> can be found centrally aligned with the bottom wall,
+            subtly closer to the right wall, with no rotation in its orientation. <b><span style="color: #0466C8">Make it Starry Night Van Gogh painting style.</span></b>"
+          </font></p></div>
+          <div style="text-align: center;" class="expand-button" onclick="expandParagraph('paragraph4')">[...]</div>
+        </div>
+      </div>
+
+      <script>
+        var videos = document.querySelectorAll(".video-large");
+            // Loop through each video and set the playback rate to 2x speed
+            videos.forEach(function(video) {
+              video.playbackRate = 10.0;
+            });
+      </script>
+    </div>
+
+
+
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Animation</h2>
+
+
+        <h3 class="title is-4">Interpolating states</h3>
+        <div class="content has-text-justified">
+          <p>
+            We can also animate the scene by interpolating the deformation latent codes of two input
+            frames. Use the slider here to linearly interpolate between the left frame and the right
+            frame.
+          </p>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-3 has-text-centered">
+            <img src="./static/images/interpolate_start.jpg"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <p>Start Frame</p>
+          </div>
+          <div class="column interpolation-video-column">
+            <div id="interpolation-image-wrapper">
+              Loading...
+            </div>
+            <input class="slider is-fullwidth is-large is-info"
+                   id="interpolation-slider"
+                   step="1" min="0" max="100" value="0" type="range">
+          </div>
+          <div class="column is-3 has-text-centered">
+            <img src="./static/images/interpolate_end.jpg"
+                 class="interpolation-image"
+                 alt="Interpolation end reference image."/>
+            <p class="is-bold">End Frame</p>
+          </div>
+        </div>
+        <br/>
+
+
+
+        <h3 class="title is-4">Re-rendering the input video</h3>
+        <div class="content has-text-justified">
+          <p>
+            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
+            viewpoint such as a stabilized camera by playing back the training deformations.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <video id="replay-video"
+                 controls
+                 muted
+                 preload
+                 playsinline
+                 width="75%">
+            <source src="./static/videos/replay.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Links</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            There's a lot of excellent work that was introduced around the same time as ours.
+          </p>
+          <p>
+            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
+          </p>
+          <p>
+            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+            both use deformation fields to model non-rigid scenes.
+          </p>
+          <p>
+            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
+          </p>
+          <p>
+            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+-->
+
+<!--
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{ocal2024sceneteller,
+  title     = {SceneTeller: Language-to-3D Scene Generation},
+  author    = {{\"O}cal, Ba{\c{s}}ak Melis and Tatarchenko, Maxim and Karaoglu, Sezer and Gevers, Theo},
+  journal   = {arXiv preprint arXiv:2407.20727},
+  year      = {2024},
+}</code></pre>
+  </div>
+</section>
+-->
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            We thank the authors of <a href="https://github.com/nerfies/nerfies.github.io"><span class="dnerf">Nerfies</span></a> that kindly open sourced the template of this website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
