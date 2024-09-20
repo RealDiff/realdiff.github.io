@@ -153,12 +153,12 @@
                 </a>
               </span>
               <span class="link-block">
-                <a href=""
+                <a href="https://www.arxiv.org/abs/2409.10180"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="ai ai-arxiv"></i>
                   </span>
-                  <span>arXiv (Coming soon)</span>
+                  <span>arXiv</span>
                 </a>
               </span>
               <!--
@@ -174,12 +174,12 @@
               -->
               <!-- Code Link. -->
               <span class="link-block">
-                <a href=""
+                <a href="https://github.com/RealDiff/RealDiff"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fab fa-github"></i>
                   </span>
-                  <span>Code (Coming soon)</span>
+                  <span>Code</span>
                   </a>
               </span>
               <!-- Dataset Link.
@@ -201,18 +201,20 @@
   </div>
 </section>
 
-<!--
-<section class="teaser">
+<section class="hero teaser">
   <div class="container is-max-desktop">
-    <div class="intro">
-      <img src="./static/intro.jpg">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
       <h2 class="subtitle has-text-centered">
-        <br><br> <span class="dnerf">SceneTeller</span> generates realistic and high-quality 3D spaces from natural language prompts describing the object placement in the room.
+        <span class="dnerf">RealDiff</span> formulates point cloud completion as a conditional generation problem directly on real-world measurements in a self-supervised way.
       </h2>
     </div>
   </div>
 </section>
--->
+
 
 <!--
 <section class="hero is-light is-small">
@@ -299,7 +301,7 @@
           </p>
           <p>
             To better deal with noisy observations without resorting to training on synthetic data, we leverage additional geometric cues.
-            Specifically, RealDiff simulates a diffusion process at the missing object parts while conditioning the generation on the partial input to
+            Specifically, <span class="dnerf">RealDiff</span> simulates a diffusion process at the missing object parts while conditioning the generation on the partial input to
             address the multimodal nature of the task. We further regularize the training by matching object silhouettes and depth maps,
             predicted by our method, with the externally estimated ones. Experimental results show that our method consistently outperforms
             state-of-the-art methods in real-world point cloud completion.
@@ -338,6 +340,64 @@
       </div>
     </div>
     -->
+
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Experiments</h2>
+        <div class="pipeline overview">
+          <img src="./static/mainres.jpg" >
+          <p class="content has-text-justified"><b>Point cloud completion results on the ScanNet dataset at the resolution of 16384 points.</b>
+          Experimental results show that the proposed method outperforms the state-of-the-art baselines.
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3"></h2>
+        <div class="pipeline overview">
+          <img src="./static/realworldresqual.jpg" >
+          <p class="content has-text-justified"><b>Visual comparison of point cloud completion results on the ScanNet dataset.</b>
+          From left to right: partial shapes sampled from depth images, completion from baselines, our results, and ground-truth CAD model alignments
+from Scan2CAD annotations. For multi-modal methods, we picked single output shapes corresponding to a specific random
+seed. Our methodology produces reconstructions that are both more comprehensive and adept at retaining the initially
+observed structural characteristics.
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3"></h2>
+        <div class="pipeline overview">
+          <img src="./static/multimodalres.jpg" >
+          <p class="content has-text-justified"><b>Multi-modal shape completion on ScanNet dataset with 16384 points.</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3"></h2>
+        <div class="pipeline overview">
+          <img src="./static/multimodal.jpg" >
+          <p class="content has-text-justified"><b>Multimodal completion results for the ScanNet dataset.</b>
+          Shapes are ordered from left to right, top to bottom. Our method is able to generate multiple valid outputs across different runs. As the input incompleteness degree rises, the
+uncertainty in how to complete the shape geometry also increases which allows for a higher diversity (first, third and fourth
+shapes). When a more complete input is provided (second shape), we observe slight changes in the recovered geometry
+between different runs.
+        </div>
+      </div>
+    </div>
 
 
   </div>
@@ -837,19 +897,19 @@
 </section>
 -->
 
-<!--
+
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
-    <pre><code>@article{ocal2024sceneteller,
-  title     = {SceneTeller: Language-to-3D Scene Generation},
-  author    = {{\"O}cal, Ba{\c{s}}ak Melis and Tatarchenko, Maxim and Karaoglu, Sezer and Gevers, Theo},
-  journal   = {arXiv preprint arXiv:2407.20727},
-  year      = {2024},
+    <pre><code>@article{ocal2024realdiff,
+  title={RealDiff: Real-world 3D Shape Completion using Self-Supervised Diffusion Models},
+  author={{\"O}cal, Ba{\c{s}}ak Melis and Tatarchenko, Maxim and Karaoglu, Sezer and Gevers, Theo},
+  journal={arXiv preprint arXiv:2409.10180},
+  year={2024}
 }</code></pre>
   </div>
 </section>
--->
+
 
 <footer class="footer">
   <div class="container">
